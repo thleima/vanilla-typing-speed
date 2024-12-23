@@ -1,0 +1,2 @@
+let testTextArray = ["The quick brown fox jumps over the lazy dog", "A phrase is a short selection of words which when put together create a concept", "My mom drove me to school 5 minutes late on Thursday", "African elephant have bigger ears than Asian elephant", "My shoes are blue with yellow stripes and green stars on the front"]; 
+let startTime, endTime;
