@@ -1,4 +1,4 @@
-let testTextArray = [
+const testTextArray = [
   "The quick brown fox jumps over the lazy dog",
   "A phrase is a short selection of words which when put together create a concept",
   "My mom drove me to school 5 minutes late on Thursday",
@@ -8,58 +8,47 @@ let testTextArray = [
 let startTime, endTime;
 
 async function startTest() {
+  // wait for the countdown modal to execute
   await starterModal();
   // Select a random sentence from the testTextArray
   let randomIndex = Math.floor(Math.random() * testTextArray.length + 1);
+  // display the sentence
   document.getElementById("inputText").value = testTextArray[randomIndex];
-
-  // Reset results and timer
+  // Reset previous output and start timer
   document.getElementById("output").innerHTML = "";
   startTime = new Date().getTime();
-
-  // Change button text and functionality
-  var button = document.getElementById("btn");
+  // Change button text and function
+  const button = document.getElementById("btn");
   button.innerHTML = "End Test";
   button.onclick = endTest;
 }
 
 function endTest() {
+  // get the time when end
   endTime = new Date().getTime();
-
   // Disable user input - preventing from contine typing after the test ends
   document.getElementById("userInput").readOnly = true;
-
-  // Calculate time elapsed and words per minute (WPM)
-  var timeElapsed = (endTime - startTime) / 1000; // in seconds
-  var userTypedText = document.getElementById("userInput").value;
-
   // Split the text using regex to count words correctly
-  var typedWords = userTypedText.split(/\s+/).filter(function (word) {
+  const userTypedText = document.getElementById("userInput").value;
+  const typedWords = userTypedText.split(/\s+/).filter(function (word) {
     return word !== "";
   }).length;
-
-  var wpm = 0; // Default value
-
+  // Calculate time elapsed and words per minute (WPM)
+  const timeElapsed = (endTime - startTime) / 1000; // in seconds
+  let wpm = 0; // Default value
   if (timeElapsed !== 0 && !isNaN(typedWords)) {
     wpm = Math.round((typedWords / timeElapsed) * 60);
   }
 
   // Display the results
-  var outputDiv = document.getElementById("output");
-  outputDiv.innerHTML =
-    "<h2>Typing Test Results:</h2>" +
-    "<p>Words Typed: " +
-    typedWords +
-    "</p>" +
-    "<p>Time Elapsed: " +
-    timeElapsed.toFixed(2) +
-    " seconds</p>" +
-    "<p>Words Per Minute (WPM): " +
-    wpm +
-    "</p>";
-
-  // Reset the button
-  var button = document.getElementById("btn");
+  let outputDiv = document.getElementById("output");
+  outputDiv.innerHTML = `<h2>Typing Test Results:</h2>
+  <p>Words Typed: ${typedWords}</p>
+  <p>Time Elapsed: ${timeElapsed.toFixed(2)} seconds </p>
+  <p>Words Per Minute (WPM): ${wpm} </p>
+  `;
+  // Set the button back to Start with its functionnality
+  let button = document.getElementById("btn");
   button.innerHTML = "Start Test";
   button.onclick = startTest;
 }
@@ -69,7 +58,7 @@ function starterModal() {
     const modal = document.getElementById("starter");
     modal.classList.remove("unvisible");
     let countDown = 4;
-    //interval
+    //interval for the countdown to go down and display in the modal
     let interval = setInterval(() => {
       countDown--;
       document.getElementById("counter").innerText = String(countDown);
@@ -77,7 +66,7 @@ function starterModal() {
         clearInterval(interval);
       }
     }, 1000);
-    //time out + resolve
+    // time out 4s for the interval to finish, make the modal unvisible and resole as a result
     setTimeout(() => {
       resolve(modal.classList.add("unvisible"));
     }, 4000);
