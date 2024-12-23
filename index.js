@@ -7,7 +7,8 @@ let testTextArray = [
 ];
 let startTime, endTime;
 
-function startTest() {
+async function startTest() {
+  await starterModal();
   // Select a random sentence from the testTextArray
   let randomIndex = Math.floor(Math.random() * testTextArray.length + 1);
   document.getElementById("inputText").value = testTextArray[randomIndex];
@@ -61,4 +62,24 @@ function endTest() {
   var button = document.getElementById("btn");
   button.innerHTML = "Start Test";
   button.onclick = startTest;
+}
+
+function starterModal() {
+  return new Promise((resolve, reject) => {
+    const modal = document.getElementById("starter");
+    modal.classList.remove("unvisible");
+    let countDown = 4;
+    //interval
+    let interval = setInterval(() => {
+      countDown--;
+      document.getElementById("counter").innerText = String(countDown);
+      if (countDown === 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+    //time out + resolve
+    setTimeout(() => {
+      resolve(modal.classList.add("unvisible"));
+    }, 4000);
+  });
 }

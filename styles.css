@@ -1,0 +1,13 @@
+#starter {
+  border-radius: 4px;
+  width: 280px;
+  height: 200px;
+  padding: 0 20px;
+  position: fixed;
+  z-index: 1;
+  background-color: lightblue;
+}
+
+.unvisible {
+  display: none;
+}
