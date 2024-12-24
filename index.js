@@ -12,6 +12,14 @@ let outputText = document.getElementById("outputText");
 let userInput = document.getElementById("userInput");
 const button = document.getElementById("btn");
 
+// disable pasting in user input to avoid cheaters :)
+window.onload = () => {
+  userInput.onpaste = (e) => {
+    e.preventDefault();
+    alert("NO CHEATING");
+  };
+};
+
 async function startTest() {
   // empty the output when second try
   outputTestResults.innerHTML = "";
