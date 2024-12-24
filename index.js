@@ -8,6 +8,10 @@ const testTextArray = [
 let startTime, endTime;
 
 async function startTest() {
+  let outputDiv = document.getElementById("output");
+  outputDiv.innerHTML = "";
+  const button = document.getElementById("btn");
+  button.classList.add("unvisible");
   // wait for the countdown modal to execute
   await starterModal();
   // Select a random sentence from the testTextArray
@@ -18,7 +22,7 @@ async function startTest() {
   document.getElementById("output").innerHTML = "";
   startTime = new Date().getTime();
   // Change button text and function
-  const button = document.getElementById("btn");
+  button.classList.remove("unvisible");
   button.innerHTML = "End Test";
   button.onclick = endTest;
 }
