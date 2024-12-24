@@ -8,15 +8,18 @@
 <body>
   <h1>Speed Typing Analysis</h1>
     <div id="starter" class="unvisible">
-      <p>The test starts in :</p>
       <p id="counter"></p>
     </div>
+    <div id="container">
     <label for="inputText">Type the following text:</label><br>
-    <textarea id="inputText"  cols="50" rows="5" readonly placeholder="Get ready to type..."></textarea><br>
+    <textarea id="inputText"  cols="100" rows="5" readonly placeholder="Get ready to type..."></textarea><br>
 
     <label for="userInput">Your typing:</label><br>
-    <textarea id="userInput"  cols="50" rows="5" placeholder="Start typing when ready"></textarea><br>
+    <textarea id="userInput"  cols="100" rows="5" placeholder="Start typing when ready"></textarea>
+    <br>
     <button onclick="startTest()" id="btn">Start Test</button>
+  </div>
+    
     <div id="output"></div>
     <script src="./index.js"></script>
 </body>

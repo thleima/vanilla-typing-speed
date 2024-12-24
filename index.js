@@ -11,7 +11,7 @@ async function startTest() {
   // wait for the countdown modal to execute
   await starterModal();
   // Select a random sentence from the testTextArray
-  let randomIndex = Math.floor(Math.random() * testTextArray.length + 1);
+  let randomIndex = Math.floor(Math.random() * testTextArray.length);
   // display the sentence
   document.getElementById("inputText").value = testTextArray[randomIndex];
   // Reset previous output and start timer
@@ -57,18 +57,19 @@ function starterModal() {
   return new Promise((resolve, reject) => {
     const modal = document.getElementById("starter");
     modal.classList.remove("unvisible");
-    let countDown = 4;
+    let countDown = 3;
+    document.getElementById("counter").innerText = String(countDown);
     //interval for the countdown to go down and display in the modal
     let interval = setInterval(() => {
       countDown--;
       document.getElementById("counter").innerText = String(countDown);
-      if (countDown === 0) {
+      if (countDown === 1) {
         clearInterval(interval);
       }
     }, 1000);
     // time out 4s for the interval to finish, make the modal unvisible and resole as a result
     setTimeout(() => {
       resolve(modal.classList.add("unvisible"));
-    }, 4000);
+    }, 3200);
   });
 }
