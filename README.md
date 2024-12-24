@@ -12,6 +12,6 @@ Click END
 
 You will find comments in 
 index.js
-to explain step by step the functionnality.
+to explain step by step the functionnalities.
 
 Feel free to comment to provide a review, thanks !
