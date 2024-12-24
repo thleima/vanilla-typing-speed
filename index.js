@@ -7,21 +7,26 @@ const testTextArray = [
 ];
 let startTime, endTime;
 
+let outputTestResults = document.getElementById("output");
+let outputText = document.getElementById("outputText");
+let userInput = document.getElementById("userInput");
+const button = document.getElementById("btn");
+
 async function startTest() {
-  // empty the output if second try
-  let outputDiv = document.getElementById("output");
-  outputDiv.innerHTML = "";
-  // undisplay to button to avoid multi click (that go with multi countdown)
-  const button = document.getElementById("btn");
+  // empty the output when second try
+  outputTestResults.innerHTML = "";
+  outputText.value = "";
+  userInput.value = "";
+  userInput.readOnly = false;
+  // undisplay to button to avoid multi click (for countdown bugs)
   button.classList.add("unvisible");
   // wait for the countdown modal to execute
   await starterModal();
   // Select a random sentence from the testTextArray
   let randomIndex = Math.floor(Math.random() * testTextArray.length);
   // display the sentence
-  document.getElementById("inputText").value = testTextArray[randomIndex];
-  // Reset previous output and start timer
-  document.getElementById("output").innerHTML = "";
+  outputText.value = testTextArray[randomIndex];
+  // Start timer
   startTime = new Date().getTime();
   // Change button text and function
   button.classList.remove("unvisible");
@@ -32,31 +37,31 @@ async function startTest() {
 function endTest() {
   // get the time when end
   endTime = new Date().getTime();
-  // Disable user input - preventing from contine typing after the test ends
-  document.getElementById("userInput").readOnly = true;
-  // Split the text using regex to count words correctly
-  const userTypedText = document.getElementById("userInput").value;
-  const typedWords = userTypedText.split(/\s+/).filter(function (word) {
-    return word !== "";
-  }).length;
-  // Calculate time elapsed and words per minute (WPM)
-  const timeElapsed = (endTime - startTime) / 1000; // in seconds
-  let wpm = 0; // Default value
-  if (timeElapsed !== 0 && !isNaN(typedWords)) {
-    wpm = Math.round((typedWords / timeElapsed) * 60);
-  }
-
-  // Display the results
-  let outputDiv = document.getElementById("output");
-  outputDiv.innerHTML = `<h2>Typing Test Results:</h2>
-  <p>Words Typed: ${typedWords}</p>
+  // Split the text as a array
+  const typedWordsArray = userInput.value.toLowerCase().split(" ");
+  // Compare both sentences
+  if (typedWordsArray.join(" ") === outputText.value.toLowerCase()) {
+    // Calculate time elapsed and words per minute (WPM)
+    const timeElapsed = (endTime - startTime) / 1000; // in seconds
+    let wpm = 0; // Default value
+    if (timeElapsed !== 0 && !isNaN(typedWordsArray.length)) {
+      wpm = Math.round((typedWordsArray.length / timeElapsed) * 60);
+    }
+    // Disable user input - preventing from contine typing after the test ends
+    userInput.readOnly = true;
+    // Display the results
+    outputTestResults.innerHTML = `<h2>Typing Test Results</h2>
+  <p>Congratulations ! Here are your stats :</p>
   <p>Time Elapsed: ${timeElapsed.toFixed(2)} seconds </p>
   <p>Words Per Minute (WPM): ${wpm} </p>
   `;
-  // Set the button back to Start with its functionnality
-  let button = document.getElementById("btn");
-  button.innerHTML = "Start Test";
-  button.onclick = startTest;
+    // Set the button back to Start with its functionnality
+    button.innerHTML = "Start Test";
+    button.onclick = startTest;
+  } else {
+    outputTestResults.innerHTML =
+      "Both Sentences are not the same ! Check again";
+  }
 }
 
 function starterModal() {
@@ -73,7 +78,7 @@ function starterModal() {
         clearInterval(interval);
       }
     }, 1000);
-    // time out 4s for the interval to finish, make the modal unvisible and resole as a result
+    // time out for the interval to finish, make the modal unvisible - resolve the promise
     setTimeout(() => {
       resolve(modal.classList.add("unvisible"));
     }, 3200);
