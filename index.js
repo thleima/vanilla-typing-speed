@@ -8,8 +8,10 @@ const testTextArray = [
 let startTime, endTime;
 
 async function startTest() {
+  // empty the output if second try
   let outputDiv = document.getElementById("output");
   outputDiv.innerHTML = "";
+  // undisplay to button to avoid multi click (that go with multi countdown)
   const button = document.getElementById("btn");
   button.classList.add("unvisible");
   // wait for the countdown modal to execute
