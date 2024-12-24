@@ -6,13 +6,13 @@ const testTextArray = [
   "My shoes are blue with yellow stripes and green stars on the front",
 ];
 let startTime, endTime;
-
+let numOfPlay = 1;
 let outputTestResults = document.getElementById("output");
 let outputText = document.getElementById("outputText");
 let userInput = document.getElementById("userInput");
 const button = document.getElementById("btn");
 
-// disable pasting in user input to avoid cheaters :)
+// disable copy / paster in user input to avoid cheaters :)
 window.onload = () => {
   userInput.onpaste = (e) => {
     e.preventDefault();
@@ -21,74 +21,104 @@ window.onload = () => {
 };
 
 async function startTest() {
-  // empty the output when second try
-  outputTestResults.innerHTML = "";
-  outputText.value = "";
-  userInput.value = "";
-  userInput.readOnly = false;
-  // undisplay to button to avoid multi click (for countdown bugs)
-  button.classList.add("unvisible");
+  if (numOfPlay > 1) {
+    outputText.value = "";
+    userInput.value = "";
+    userInput.readOnly = false;
+  }
+  // hide Start button
+  toggleClassList(button, "unvisible");
   // wait for the countdown modal to execute
-  await starterModal();
+  await countDownModal();
   // Select a random sentence from the testTextArray
   let randomIndex = Math.floor(Math.random() * testTextArray.length);
   // display the sentence
   outputText.value = testTextArray[randomIndex];
   // Start timer
   startTime = new Date().getTime();
-  // Change button text and function
-  button.classList.remove("unvisible");
-  button.innerHTML = "End Test";
+  // Change button text and function to End when ready
+  toggleClassList(button, "unvisible");
+  changeInnerText(button, "End Test");
   button.onclick = endTest;
 }
 
 function endTest() {
   // get the time when end
   endTime = new Date().getTime();
-  // Split the text as a array
-  const typedWordsArray = userInput.value.toLowerCase().split(" ");
+  const timeElapsed = calculateSecondsElapsed(startTime, endTime);
   // Compare both sentences
-  if (typedWordsArray.join(" ") === outputText.value.toLowerCase()) {
-    // Calculate time elapsed and words per minute (WPM)
-    const timeElapsed = (endTime - startTime) / 1000; // in seconds
-    let wpm = 0; // Default value
-    if (timeElapsed !== 0 && !isNaN(typedWordsArray.length)) {
-      wpm = Math.round((typedWordsArray.length / timeElapsed) * 60);
-    }
-    // Disable user input - preventing from contine typing after the test ends
+  const userSentence = userInput.value.toLowerCase();
+  if (userSentence === outputText.value.toLowerCase()) {
+    // word per minutes
+    let wpm = 0;
+    const wordsCount = userSentence.split(" ").length;
+    wpm = calculateWpm(wordsCount, timeElapsed);
     userInput.readOnly = true;
-    // Display the results
-    outputTestResults.innerHTML = `<h2>Typing Test Results</h2>
-  <p>Congratulations ! Here are your stats :</p>
-  <p>Time Elapsed: ${timeElapsed.toFixed(2)} seconds </p>
-  <p>Words Per Minute (WPM): ${wpm} </p>
-  `;
-    // Set the button back to Start with its functionnality
-    button.innerHTML = "Start Test";
+    outputTestResults.innerHTML += testResultsCard(timeElapsed, wpm);
+    // Set the button back to Start for a new try
+    changeInnerText(button, "Start Test");
     button.onclick = startTest;
+    numOfPlay++;
   } else {
-    outputTestResults.innerHTML =
-      "Both Sentences are not the same ! Check again";
+    changeInnerText(
+      outputTestResults,
+      "Both Sentences are not the same. Check your text !"
+    );
   }
 }
 
-function starterModal() {
+function countDownModal() {
   return new Promise((resolve, reject) => {
     const modal = document.getElementById("starter");
-    modal.classList.remove("unvisible");
+    let counter = document.getElementById("counter");
     let countDown = 3;
-    document.getElementById("counter").innerText = String(countDown);
+    toggleClassList(modal, "unvisible");
+    changeInnerText(counter, String(countDown));
     //interval for the countdown to go down and display in the modal
     let interval = setInterval(() => {
       countDown--;
-      document.getElementById("counter").innerText = String(countDown);
+      changeInnerText(counter, String(countDown));
       if (countDown === 1) {
         clearInterval(interval);
       }
     }, 1000);
     // time out for the interval to finish, make the modal unvisible - resolve the promise
     setTimeout(() => {
-      resolve(modal.classList.add("unvisible"));
+      resolve(toggleClassList(modal, "unvisible"));
     }, 3200);
   });
+}
+
+/* ------- Helpers Functions --------- */
+
+function testResultsCard(time, wordMinute) {
+  return `
+ <div class="resultCard">
+    <p style="text-align: center; font-size: 18px; font-weight: 600;">Play n° ${numOfPlay}</p>
+    <p><span style="text-decoration: underline;">Time Elapsed:</span> ${time.toFixed(
+      2
+    )}</p>
+    <p><span style="text-decoration: underline;">Words Per Minute:</span> ${wordMinute} </p>
+  </div>
+  `;
+}
+
+function calculateSecondsElapsed(start, end) {
+  return (end - start) / 1000;
+}
+
+function calculateWpm(numberOfWords, time) {
+  if (time !== 0 && !isNaN(numberOfWords)) {
+    return Math.round((numberOfWords / time) * 60);
+  } else {
+    return "error";
+  }
+}
+
+function toggleClassList(element, classname) {
+  element.classList.toggle(classname);
+}
+
+function changeInnerText(element, text) {
+  element.innerText = text;
 }
